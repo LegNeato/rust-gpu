@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Flat","FlatWithHoles","KhrSegmented"],"struct":["KhrSegmentedVec","NamedIdxMap"],"trait":["FlatIdx","StorageShape"]};

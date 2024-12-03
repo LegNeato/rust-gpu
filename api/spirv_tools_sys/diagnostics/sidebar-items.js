@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["MessageLevel"],"fn":["diagnostic_destroy"],"struct":["Diagnostic","Position"],"type":["MessageCallback"]};

@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Building - Rust GPU Dev Guide</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust GPU Dev Guide</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="building-rust-gpu"><a class="header" href="#building-rust-gpu">Building Rust-GPU</a></h1>
+<h2 id="getting-started"><a class="header" href="#getting-started">Getting started</a></h2>
+<ol>
+<li>
+<p>Clone the repository.</p>
+<pre><code class="language-shell">git clone --recurse-submodules https://github.com/rust-gpu/rust-gpu
+</code></pre>
+</li>
+<li>
+<p><strong>optional</strong> Install <a href="https://github.com/KhronosGroup/SPIRV-Tools#downloads">SPIRV-Tools</a> and add it to your <code>PATH</code>. You can skip this step if you just want to run examples with the defaults. See <a href="#using-installed-spirv-tools">Using installed SPIRV-Tools</a> if you decide to go with this option.</p>
+</li>
+<li>
+<p>Next, look at the <a href="https://github.com/rust-gpu/rust-gpu/tree/main/examples">examples</a> folder. There are two kinds of targets here: [runners] and [shaders]. The projects inside <code>shaders</code> are "GPU crates", i.e. ones that will be compiled to one or more SPIR-V modules. The <code>runner</code> projects are normal, CPU crates that use some graphics backend (currently, we have a <a href="https://github.com/rust-gpu/rust-gpu/tree/main/examples/runners/wgpu"><code>wgpu</code> runner</a>, a <a href="https://github.com/rust-gpu/rust-gpu/tree/main/examples/runners/ash">Vulkan runner</a> through <code>ash</code>, and a barebones pure software <a href="https://github.com/rust-gpu/rust-gpu/tree/main/examples/runners/cpu">CPU runner</a>) to actually run one of the "GPU crate" shaders.</p>
+<p>Run the example:</p>
+<pre><code class="language-shell">cargo run --bin example-runner-wgpu
+</code></pre>
+<p>This will build <code>rustc_codegen_spirv</code>, the compiler, then use that compiler to build <a href="examples/shaders/sky-shader"><code>sky-shader</code></a> into a SPIR-V module, then finally, build a <code>wgpu</code> sample app (modified from <a href="https://github.com/gfx-rs/wgpu-rs/tree/master/examples/hello-triangle"><code>wgpu</code>'s examples</a>) using the built SPIR-V module to display the shader in a window.</p>
+</li>
+</ol>
+<h2 id="prerequisite-linux-packages-recommended-to-install-before-building-rust-gpu"><a class="header" href="#prerequisite-linux-packages-recommended-to-install-before-building-rust-gpu">Prerequisite linux packages recommended to install before building Rust-GPU</a></h2>
+<p>You may need the development version (i.e. headers/etc. included) of some packages in some distributions to be able to
+build the examples - specifically, x11 and libxkbcommon, as well as gcc/clang with c++ support. These packages may be
+called (fedora) <code>libX11-devel</code>, <code>libxkbcommon-x11-devel</code>, and <code>gcc-c++</code>, or (ubuntu) <code>libxkbcommon-x11-dev</code>,
+<code>libx11-dev</code>, and <code>gcc</code>.</p>
+<h2 id="using-installed-spirv-tools"><a class="header" href="#using-installed-spirv-tools">Using installed SPIRV-Tools</a></h2>
+<p>By default, all of the crates and examples in this repo will compile the <a href="https://crates.io/crates/spirv-tools-sys"><code>spirv-tools-sys</code></a> crate, including a lot of C++ code from <a href="https://github.com/EmbarkStudios/SPIRV-Tools">SPIRV-Tools</a>. If you don't want to build the C++ code because you already have <a href="https://github.com/KhronosGroup/SPIRV-Tools#downloads">SPIRV-Tools</a> installed, or just don't want to spend more time compiling, you can build/run the crate with the <code>use-installed-tools</code> feature.</p>
+<pre><code class="language-shell">cargo run \
+    --manifest-path examples/example-runner/Cargo.toml \
+    --features use-installed-tools \
+    --no-default-features
+</code></pre>
+<p>You should see <code>warning: use-installed-tools feature on, skipping compilation of C++ code</code> during the compilation, but otherwise the build will function just the same as if you compiled the C++ code, with the exception that it will fail if you don't have SPIRV-Tools installed correctly.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="introduction.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="testing.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="introduction.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="testing.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

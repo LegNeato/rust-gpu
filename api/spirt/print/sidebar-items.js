@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["AttrsAndDef","Plan","Printer"],"trait":["Print"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["SpirvResult","TargetEnv"],"fn":["binary_destroy","context_create","context_destroy"],"struct":["Binary","ToolContext"]};

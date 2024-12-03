@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["MessageLevel","SpirvResult"],"struct":["Diagnostic","Error","Message"],"trait":["MessageCallback"]};

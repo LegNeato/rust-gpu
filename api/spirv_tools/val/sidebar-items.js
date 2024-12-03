@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["ValidatorLimits"],"fn":["create"],"mod":["tool"],"struct":["ValidatorOptions"],"trait":["Validator"]};

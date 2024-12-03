@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Capability","MetadataPrintout","ModuleResult","ShaderPanicStrategy","SpirvBuilderError","SpirvMetadata"],"struct":["CompileResult","SpirvBuilder"]};

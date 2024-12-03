@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["structurize_func_cfgs"]};

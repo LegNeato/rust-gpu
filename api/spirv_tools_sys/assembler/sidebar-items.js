@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["BinaryOptions","DisassembleOptions"],"fn":["assemble","disassemble","text_destroy"],"struct":["Text"]};

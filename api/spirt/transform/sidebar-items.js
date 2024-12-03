@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Transformed"],"trait":["InnerInPlaceTransform","InnerTransform","Transformer"]};

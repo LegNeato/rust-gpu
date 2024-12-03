@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["minimize_exports","resolve_imports"]};

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Binary"],"fn":["from_binary","to_binary"]};

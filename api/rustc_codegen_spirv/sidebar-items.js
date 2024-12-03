@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"fn":["__rustc_codegen_backend"]};

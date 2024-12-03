@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Error","InsertPoint","Operand"],"fn":["load_bytes","load_words"],"struct":["Block","Builder","Function","Instruction","Loader","Module","ModuleHeader"]};
