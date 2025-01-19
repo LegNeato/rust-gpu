@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/rustc_codegen_spirv/src/builder/intrinsics.rs`."><title>intrinsics.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-081576b923113409.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rustc_codegen_spirv" data-themes="" data-resource-suffix="" data-rustdoc-version="1.79.0-nightly (244da22fa 2024-04-23)" data-channel="nightly" data-search-js="search-bf21c90c8c1d92b1.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../../static.files/storage-e32f0c247825364d.js"></script><script defer src="../../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-20a3ad099b048cf2.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-09095024cf37855e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../../rustc_codegen_spirv/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Type ‘S’ or ‘/’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings">Settings</a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/rustc_codegen_spirv/src/builder/intrinsics.rs`."><title>intrinsics.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-6b053e98.ttf.woff2,FiraSans-Regular-0fe48ade.woff2,FiraSans-Medium-e1aa3f0a.woff2,SourceCodePro-Regular-8badfe75.ttf.woff2,SourceCodePro-Semibold-aa29a496.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../../static.files/normalize-9960930a.css"><link rel="stylesheet" href="../../../static.files/rustdoc-42caa33d.css"><meta name="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="rustc_codegen_spirv" data-themes="" data-resource-suffix="" data-rustdoc-version="1.84.0-nightly (b19329a37 2024-11-21)" data-channel="nightly" data-search-js="search-92e6798f.js" data-settings-js="settings-0f613d39.js" ><script src="../../../static.files/storage-59e33391.js"></script><script defer src="../../../static.files/src-script-56102188.js"></script><script defer src="../../../src-files.js"></script><script defer src="../../../static.files/main-5f194d8c.js"></script><noscript><link rel="stylesheet" href="../../../static.files/noscript-893ab5e7.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-6580c154.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-044be391.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="main-heading"><h1><div class="sub-heading">rustc_codegen_spirv/builder/</div>intrinsics.rs</h1><rustdoc-toolbar></rustdoc-toolbar></div><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers">
+<a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -423,7 +424,17 @@
 <a href="#423" id="423">423</a>
 <a href="#424" id="424">424</a>
 <a href="#425" id="425">425</a>
-</pre></div><pre class="rust"><code><span class="kw">use </span><span class="kw">super</span>::Builder;
+<a href="#426" id="426">426</a>
+<a href="#427" id="427">427</a>
+<a href="#428" id="428">428</a>
+<a href="#429" id="429">429</a>
+<a href="#430" id="430">430</a>
+<a href="#431" id="431">431</a>
+<a href="#432" id="432">432</a>
+<a href="#433" id="433">433</a></pre></div><pre class="rust"><code><span class="comment">// HACK(eddyb) avoids rewriting all of the imports (see `lib.rs` and `build.rs`).
+</span><span class="kw">use </span><span class="kw">crate</span>::maybe_pqp_cg_ssa <span class="kw">as </span>rustc_codegen_ssa;
+
+<span class="kw">use </span><span class="kw">super</span>::Builder;
 <span class="kw">use </span><span class="kw">crate</span>::abi::ConvSpirvType;
 <span class="kw">use </span><span class="kw">crate</span>::builder_spirv::{SpirvValue, SpirvValueExt};
 <span class="kw">use </span><span class="kw">crate</span>::codegen_cx::CodegenCx;
@@ -433,12 +444,12 @@
 <span class="kw">use </span>rspirv::spirv::GLOp;
 <span class="kw">use </span>rustc_codegen_ssa::mir::operand::OperandRef;
 <span class="kw">use </span>rustc_codegen_ssa::mir::place::PlaceRef;
-<span class="kw">use </span>rustc_codegen_ssa::traits::{BuilderMethods, IntrinsicCallMethods};
+<span class="kw">use </span>rustc_codegen_ssa::traits::{BuilderMethods, IntrinsicCallBuilderMethods};
 <span class="kw">use </span>rustc_middle::ty::layout::LayoutOf;
-<span class="kw">use </span>rustc_middle::ty::{FnDef, Instance, ParamEnv, Ty, TyKind};
+<span class="kw">use </span>rustc_middle::ty::{FnDef, Instance, Ty, TyKind, TypingEnv};
 <span class="kw">use </span>rustc_middle::{bug, ty};
-<span class="kw">use </span>rustc_span::sym;
 <span class="kw">use </span>rustc_span::Span;
+<span class="kw">use </span>rustc_span::sym;
 <span class="kw">use </span>rustc_target::abi::call::{FnAbi, PassMode};
 <span class="kw">use </span>std::assert_matches::assert_matches;
 
@@ -488,7 +499,7 @@
     }
 }
 
-<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, <span class="lifetime">'tcx</span>&gt; IntrinsicCallMethods&lt;<span class="lifetime">'tcx</span>&gt; <span class="kw">for </span>Builder&lt;<span class="lifetime">'a</span>, <span class="lifetime">'tcx</span>&gt; {
+<span class="kw">impl</span>&lt;<span class="lifetime">'a</span>, <span class="lifetime">'tcx</span>&gt; IntrinsicCallBuilderMethods&lt;<span class="lifetime">'tcx</span>&gt; <span class="kw">for </span>Builder&lt;<span class="lifetime">'a</span>, <span class="lifetime">'tcx</span>&gt; {
     <span class="kw">fn </span>codegen_intrinsic_call(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         instance: Instance&lt;<span class="lifetime">'tcx</span>&gt;,
@@ -497,7 +508,7 @@
         llresult: <span class="self">Self</span>::Value,
         _span: Span,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;(), ty::Instance&lt;<span class="lifetime">'tcx</span>&gt;&gt; {
-        <span class="kw">let </span>callee_ty = instance.ty(<span class="self">self</span>.tcx, ParamEnv::reveal_all());
+        <span class="kw">let </span>callee_ty = instance.ty(<span class="self">self</span>.tcx, TypingEnv::fully_monomorphized());
 
         <span class="kw">let </span>(def_id, fn_args) = <span class="kw">match </span><span class="kw-2">*</span>callee_ty.kind() {
             FnDef(def_id, fn_args) =&gt; (def_id, fn_args),
@@ -507,7 +518,7 @@
         <span class="kw">let </span>sig = callee_ty.fn_sig(<span class="self">self</span>.tcx);
         <span class="kw">let </span>sig = <span class="self">self
             </span>.tcx
-            .normalize_erasing_late_bound_regions(ParamEnv::reveal_all(), sig);
+            .normalize_erasing_late_bound_regions(TypingEnv::fully_monomorphized(), sig);
         <span class="kw">let </span>arg_tys = sig.inputs();
         <span class="kw">let </span>name = <span class="self">self</span>.tcx.item_name(def_id);
 
@@ -583,11 +594,10 @@
             }
             sym::sinf32 | sym::sinf64 =&gt; <span class="self">self</span>.gl_op(GLOp::Sin, ret_ty, [args[<span class="number">0</span>].immediate()]),
             sym::cosf32 | sym::cosf64 =&gt; <span class="self">self</span>.gl_op(GLOp::Cos, ret_ty, [args[<span class="number">0</span>].immediate()]),
-            sym::powf32 | sym::powf64 =&gt; <span class="self">self</span>.gl_op(
-                GLOp::Pow,
-                ret_ty,
-                [args[<span class="number">0</span>].immediate(), args[<span class="number">1</span>].immediate()],
-            ),
+            sym::powf32 | sym::powf64 =&gt; <span class="self">self</span>.gl_op(GLOp::Pow, ret_ty, [
+                args[<span class="number">0</span>].immediate(),
+                args[<span class="number">1</span>].immediate(),
+            ]),
             sym::expf32 | sym::expf64 =&gt; <span class="self">self</span>.gl_op(GLOp::Exp, ret_ty, [args[<span class="number">0</span>].immediate()]),
             sym::exp2f32 | sym::exp2f64 =&gt; <span class="self">self</span>.gl_op(GLOp::Exp2, ret_ty, [args[<span class="number">0</span>].immediate()]),
             sym::logf32 | sym::logf64 =&gt; <span class="self">self</span>.gl_op(GLOp::Log, ret_ty, [args[<span class="number">0</span>].immediate()]),
@@ -597,28 +607,22 @@
                 // log10(x) == (1 / ln(10)) * ln(x)
                 </span><span class="kw">let </span>mul = <span class="self">self</span>.constant_float(args[<span class="number">0</span>].immediate().ty, <span class="number">1.0 </span>/ <span class="number">10.0f64</span>.ln());
                 <span class="kw">let </span>ln = <span class="self">self</span>.gl_op(GLOp::Log, ret_ty, [args[<span class="number">0</span>].immediate()]);
-                <span class="self">self</span>.mul(mul, ln)
+                <span class="self">self</span>.fmul(mul, ln)
             }
-            sym::fmaf32 | sym::fmaf64 =&gt; <span class="self">self</span>.gl_op(
-                GLOp::Fma,
-                ret_ty,
-                [
-                    args[<span class="number">0</span>].immediate(),
-                    args[<span class="number">1</span>].immediate(),
-                    args[<span class="number">2</span>].immediate(),
-                ],
-            ),
+            sym::fmaf32 | sym::fmaf64 =&gt; <span class="self">self</span>.gl_op(GLOp::Fma, ret_ty, [
+                args[<span class="number">0</span>].immediate(),
+                args[<span class="number">1</span>].immediate(),
+                args[<span class="number">2</span>].immediate(),
+            ]),
             sym::fabsf32 | sym::fabsf64 =&gt; <span class="self">self</span>.gl_op(GLOp::FAbs, ret_ty, [args[<span class="number">0</span>].immediate()]),
-            sym::minnumf32 | sym::minnumf64 =&gt; <span class="self">self</span>.gl_op(
-                GLOp::FMin,
-                ret_ty,
-                [args[<span class="number">0</span>].immediate(), args[<span class="number">1</span>].immediate()],
-            ),
-            sym::maxnumf32 | sym::maxnumf64 =&gt; <span class="self">self</span>.gl_op(
-                GLOp::FMax,
-                ret_ty,
-                [args[<span class="number">0</span>].immediate(), args[<span class="number">1</span>].immediate()],
-            ),
+            sym::minnumf32 | sym::minnumf64 =&gt; <span class="self">self</span>.gl_op(GLOp::FMin, ret_ty, [
+                args[<span class="number">0</span>].immediate(),
+                args[<span class="number">1</span>].immediate(),
+            ]),
+            sym::maxnumf32 | sym::maxnumf64 =&gt; <span class="self">self</span>.gl_op(GLOp::FMax, ret_ty, [
+                args[<span class="number">0</span>].immediate(),
+                args[<span class="number">1</span>].immediate(),
+            ]),
             sym::copysignf32 | sym::copysignf64 =&gt; {
                 <span class="kw">let </span>val = args[<span class="number">0</span>].immediate();
                 <span class="kw">let </span>sign = args[<span class="number">1</span>].immediate();
@@ -680,20 +684,28 @@
                 .bit_reverse(args[<span class="number">0</span>].immediate().ty, <span class="prelude-val">None</span>, args[<span class="number">0</span>].immediate().def(<span class="self">self</span>))
                 .unwrap()
                 .with_type(args[<span class="number">0</span>].immediate().ty),
-
             sym::bswap =&gt; {
                 <span class="comment">// https://github.com/KhronosGroup/SPIRV-LLVM/pull/221/files
                 // TODO: Definitely add tests to make sure this impl is right.
                 </span><span class="kw">let </span>arg = args[<span class="number">0</span>].immediate();
-                <span class="kw">match </span>int_type_width_signed(arg_tys[<span class="number">0</span>], <span class="self">self</span>)
-                    .expect(<span class="string">"bswap must have integer argument"</span>)
-                    .<span class="number">0
-                </span>{
-                    <span class="number">8 </span>=&gt; arg,
+                <span class="kw">let </span>(width, is_signed) = int_type_width_signed(arg_tys[<span class="number">0</span>], <span class="self">self</span>)
+                    .expect(<span class="string">"bswap must have an integer argument"</span>);
+
+                <span class="comment">// Cast to unsigned type for byte-swapping
+                </span><span class="kw">let </span>unsigned_ty: u32 =
+                    SpirvType::Integer(width.try_into().unwrap(), <span class="bool-val">false</span>).def(<span class="self">self</span>.span(), <span class="self">self</span>);
+                <span class="kw">let </span>unsigned_arg = <span class="kw">if </span>is_signed {
+                    <span class="self">self</span>.bitcast(arg, unsigned_ty)
+                } <span class="kw">else </span>{
+                    arg
+                };
+
+                <span class="kw">let </span>swapped = <span class="kw">match </span>width {
+                    <span class="number">8 </span>=&gt; unsigned_arg,
                     <span class="number">16 </span>=&gt; {
                         <span class="kw">let </span>offset8 = <span class="self">self</span>.constant_u16(<span class="self">self</span>.span(), <span class="number">8</span>);
-                        <span class="kw">let </span>tmp1 = <span class="self">self</span>.shl(arg, offset8);
-                        <span class="kw">let </span>tmp2 = <span class="self">self</span>.lshr(arg, offset8);
+                        <span class="kw">let </span>tmp1 = <span class="self">self</span>.shl(unsigned_arg, offset8);
+                        <span class="kw">let </span>tmp2 = <span class="self">self</span>.lshr(unsigned_arg, offset8);
                         <span class="self">self</span>.or(tmp1, tmp2)
                     }
                     <span class="number">32 </span>=&gt; {
@@ -701,10 +713,10 @@
                         <span class="kw">let </span>offset24 = <span class="self">self</span>.constant_u32(<span class="self">self</span>.span(), <span class="number">24</span>);
                         <span class="kw">let </span>mask16 = <span class="self">self</span>.constant_u32(<span class="self">self</span>.span(), <span class="number">0xFF00</span>);
                         <span class="kw">let </span>mask24 = <span class="self">self</span>.constant_u32(<span class="self">self</span>.span(), <span class="number">0xFF0000</span>);
-                        <span class="kw">let </span>tmp4 = <span class="self">self</span>.shl(arg, offset24);
-                        <span class="kw">let </span>tmp3 = <span class="self">self</span>.shl(arg, offset8);
-                        <span class="kw">let </span>tmp2 = <span class="self">self</span>.lshr(arg, offset8);
-                        <span class="kw">let </span>tmp1 = <span class="self">self</span>.lshr(arg, offset24);
+                        <span class="kw">let </span>tmp4 = <span class="self">self</span>.shl(unsigned_arg, offset24);
+                        <span class="kw">let </span>tmp3 = <span class="self">self</span>.shl(unsigned_arg, offset8);
+                        <span class="kw">let </span>tmp2 = <span class="self">self</span>.lshr(unsigned_arg, offset8);
+                        <span class="kw">let </span>tmp1 = <span class="self">self</span>.lshr(unsigned_arg, offset24);
                         <span class="kw">let </span>tmp3 = <span class="self">self</span>.and(tmp3, mask24);
                         <span class="kw">let </span>tmp2 = <span class="self">self</span>.and(tmp2, mask16);
                         <span class="kw">let </span>res1 = <span class="self">self</span>.or(tmp1, tmp2);
@@ -722,14 +734,14 @@
                         <span class="kw">let </span>mask40 = <span class="self">self</span>.constant_u64(<span class="self">self</span>.span(), <span class="number">0xff00000000</span>);
                         <span class="kw">let </span>mask48 = <span class="self">self</span>.constant_u64(<span class="self">self</span>.span(), <span class="number">0xff0000000000</span>);
                         <span class="kw">let </span>mask56 = <span class="self">self</span>.constant_u64(<span class="self">self</span>.span(), <span class="number">0xff000000000000</span>);
-                        <span class="kw">let </span>tmp8 = <span class="self">self</span>.shl(arg, offset56);
-                        <span class="kw">let </span>tmp7 = <span class="self">self</span>.shl(arg, offset40);
-                        <span class="kw">let </span>tmp6 = <span class="self">self</span>.shl(arg, offset24);
-                        <span class="kw">let </span>tmp5 = <span class="self">self</span>.shl(arg, offset8);
-                        <span class="kw">let </span>tmp4 = <span class="self">self</span>.lshr(arg, offset8);
-                        <span class="kw">let </span>tmp3 = <span class="self">self</span>.lshr(arg, offset24);
-                        <span class="kw">let </span>tmp2 = <span class="self">self</span>.lshr(arg, offset40);
-                        <span class="kw">let </span>tmp1 = <span class="self">self</span>.lshr(arg, offset56);
+                        <span class="kw">let </span>tmp8 = <span class="self">self</span>.shl(unsigned_arg, offset56);
+                        <span class="kw">let </span>tmp7 = <span class="self">self</span>.shl(unsigned_arg, offset40);
+                        <span class="kw">let </span>tmp6 = <span class="self">self</span>.shl(unsigned_arg, offset24);
+                        <span class="kw">let </span>tmp5 = <span class="self">self</span>.shl(unsigned_arg, offset8);
+                        <span class="kw">let </span>tmp4 = <span class="self">self</span>.lshr(unsigned_arg, offset8);
+                        <span class="kw">let </span>tmp3 = <span class="self">self</span>.lshr(unsigned_arg, offset24);
+                        <span class="kw">let </span>tmp2 = <span class="self">self</span>.lshr(unsigned_arg, offset40);
+                        <span class="kw">let </span>tmp1 = <span class="self">self</span>.lshr(unsigned_arg, offset56);
                         <span class="kw">let </span>tmp7 = <span class="self">self</span>.and(tmp7, mask56);
                         <span class="kw">let </span>tmp6 = <span class="self">self</span>.and(tmp6, mask48);
                         <span class="kw">let </span>tmp5 = <span class="self">self</span>.and(tmp5, mask40);
@@ -752,6 +764,13 @@
                         );
                         undef
                     }
+                };
+
+                <span class="comment">// Cast back to the original signed type if necessary
+                </span><span class="kw">if </span>is_signed {
+                    <span class="self">self</span>.bitcast(swapped, arg.ty)
+                } <span class="kw">else </span>{
+                    swapped
                 }
             }
 
@@ -789,7 +808,7 @@
         </span>cond
     }
 
-    <span class="kw">fn </span>type_test(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _pointer: <span class="self">Self</span>::Value, _typeid: <span class="self">Self</span>::Value) -&gt; <span class="self">Self</span>::Value {
+    <span class="kw">fn </span>type_test(<span class="kw-2">&amp;mut </span><span class="self">self</span>, _pointer: <span class="self">Self</span>::Value, _typeid: <span class="self">Self</span>::Metadata) -&gt; <span class="self">Self</span>::Value {
         <span class="macro">todo!</span>()
     }
 
@@ -797,7 +816,7 @@
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
         _llvtable: <span class="self">Self</span>::Value,
         _vtable_byte_offset: u64,
-        _typeid: <span class="self">Self</span>::Value,
+        _typeid: <span class="self">Self</span>::Metadata,
     ) -&gt; <span class="self">Self</span>::Value {
         <span class="macro">todo!</span>()
     }
@@ -825,21 +844,18 @@
         // so the best thing we can do is use our own custom instruction.
         </span><span class="kw">let </span>kind_id = <span class="self">self</span>.emit().string(kind);
         <span class="kw">let </span>message_debug_printf_fmt_str_id = <span class="self">self</span>.emit().string(message_debug_printf_fmt_str);
-        <span class="self">self</span>.custom_inst(
-            void_ty,
-            CustomInst::Abort {
-                kind: Operand::IdRef(kind_id),
-                message_debug_printf: [message_debug_printf_fmt_str_id]
-                    .into_iter()
-                    .chain(
-                        message_debug_printf_args
-                            .into_iter()
-                            .map(|arg| arg.def(<span class="self">self</span>)),
-                    )
-                    .map(Operand::IdRef)
-                    .collect(),
-            },
-        );
+        <span class="self">self</span>.custom_inst(void_ty, CustomInst::Abort {
+            kind: Operand::IdRef(kind_id),
+            message_debug_printf: [message_debug_printf_fmt_str_id]
+                .into_iter()
+                .chain(
+                    message_debug_printf_args
+                        .into_iter()
+                        .map(|arg| arg.def(<span class="self">self</span>)),
+                )
+                .map(Operand::IdRef)
+                .collect(),
+        });
         <span class="self">self</span>.unreachable();
 
         <span class="comment">// HACK(eddyb) we still need an active block in case the user of this
