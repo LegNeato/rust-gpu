@@ -13,7 +13,7 @@ pub struct ExtInst {
     custom: Option<Word>,
 
     glsl: Option<Word>,
-    integer_functions_2_intel: bool,
+    integer_functions_2_intel: Option<bool>,
 }
 
 impl ExtInst {
@@ -39,9 +39,32 @@ impl ExtInst {
         }
     }
 
+    pub fn supports_integer_functions_2_intel(&mut self, bx: &Builder<'_, '_>) -> bool {
+        // If we have already checked, return the value.
+        if let Some(is_supported) = self.integer_functions_2_intel {
+            return is_supported;
+        }
+
+        // Check if the capability and extension are present.
+        if bx
+            .builder
+            .has_capability(Capability::IntegerFunctions2INTEL)
+            && bx
+                .builder
+                .has_extension(bx.sym.spv_intel_shader_integer_functions2)
+        {
+            self.integer_functions_2_intel = Some(true);
+            return true;
+        }
+
+        // Default is they are not present.
+        self.integer_functions_2_intel = Some(false);
+        false
+    }
+
     pub fn require_integer_functions_2_intel(&mut self, bx: &Builder<'_, '_>, to_zombie: Word) {
-        if !self.integer_functions_2_intel {
-            self.integer_functions_2_intel = true;
+        if !self.integer_functions_2_intel.unwrap_or(false) {
+            self.integer_functions_2_intel = Some(true);
             if !bx
                 .builder
                 .has_capability(Capability::IntegerFunctions2INTEL)

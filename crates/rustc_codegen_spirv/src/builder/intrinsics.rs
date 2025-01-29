@@ -9,6 +9,7 @@ use crate::custom_insts::CustomInst;
 use crate::spirv_type::SpirvType;
 use rspirv::dr::Operand;
 use rspirv::spirv::GLOp;
+use rustc_codegen_ssa::common::IntPredicate;
 use rustc_codegen_ssa::mir::operand::OperandRef;
 use rustc_codegen_ssa::mir::place::PlaceRef;
 use rustc_codegen_ssa::traits::{BuilderMethods, IntrinsicCallBuilderMethods};
@@ -210,35 +211,164 @@ impl<'a, 'tcx> IntrinsicCallBuilderMethods<'tcx> for Builder<'a, 'tcx> {
                 let shift = args[1].immediate();
                 self.rotate(val, shift, is_left)
             }
-
-            // TODO: Do we want to manually implement these instead of using intel instructions?
             sym::ctlz | sym::ctlz_nonzero => {
-                let result = self
-                    .emit()
-                    .u_count_leading_zeros_intel(
-                        args[0].immediate().ty,
-                        None,
-                        args[0].immediate().def(self),
-                    )
-                    .unwrap();
-                self.ext_inst
+                // Use the special Intel instruction if available.
+                if self
+                    .ext_inst
                     .borrow_mut()
-                    .require_integer_functions_2_intel(self, result);
-                result.with_type(args[0].immediate().ty)
+                    .supports_integer_functions_2_intel(self)
+                {
+                    let result = self
+                        .emit()
+                        .u_count_leading_zeros_intel(
+                            args[0].immediate().ty,
+                            None,
+                            args[0].immediate().def(self),
+                        )
+                        .unwrap();
+                    self.ext_inst
+                        .borrow_mut()
+                        .require_integer_functions_2_intel(self, result);
+                    result.with_type(args[0].immediate().ty);
+                    return Ok(());
+                }
+
+                let input = args[0].immediate();
+
+                // Determine the width of the type
+                let (bit_width, _is_signed) = int_type_width_signed(arg_tys[0], self)
+                    .expect("ctlz must have an integer argument");
+                let bit_width = bit_width as u32;
+
+                // Constants
+                let bit_width_value = self.constant_int(input.ty, bit_width as u128);
+                let zero = self.constant_int(input.ty, 0);
+
+                // Fill bits downward (spread the highest bit)
+                let mut x = input;
+                if bit_width > 1 {
+                    let shift_1 = self.lshr(x, self.constant_int(input.ty, 1));
+                    x = self.or(x, shift_1);
+                }
+                if bit_width > 2 {
+                    let shift_2 = self.lshr(x, self.constant_int(input.ty, 2));
+                    x = self.or(x, shift_2);
+                }
+                if bit_width > 4 {
+                    let shift_4 = self.lshr(x, self.constant_int(input.ty, 4));
+                    x = self.or(x, shift_4);
+                }
+                if bit_width > 8 {
+                    let shift_8 = self.lshr(x, self.constant_int(input.ty, 8));
+                    x = self.or(x, shift_8);
+                }
+                if bit_width > 16 {
+                    let shift_16 = self.lshr(x, self.constant_int(input.ty, 16));
+                    x = self.or(x, shift_16);
+                }
+                if bit_width > 32 {
+                    let shift_32 = self.lshr(x, self.constant_int(input.ty, 32));
+                    x = self.or(x, shift_32);
+                }
+                if bit_width > 64 {
+                    let shift_64 = self.lshr(x, self.constant_int(input.ty, 64));
+                    x = self.or(x, shift_64);
+                }
+
+                // Count the number of set bits
+                let popcnt = self
+                    .emit()
+                    .bit_count(input.ty, None, x.def(self))
+                    .unwrap()
+                    .with_type(input.ty);
+
+                // Compute `ctlz = bit_width - popcnt`
+                let result = self.sub(bit_width_value, popcnt);
+
+                if name == sym::ctlz_nonzero {
+                    result
+                } else {
+                    // Handle zero case without branching
+                    let is_zero = self.icmp(IntPredicate::IntEQ, input, zero);
+                    let is_zero_int = self.zext(is_zero, input.ty);
+                    let zero_case_value = self.mul(is_zero_int, bit_width_value);
+                    self.or(result, zero_case_value)
+                }
             }
             sym::cttz | sym::cttz_nonzero => {
-                let result = self
+                let input = args[0].immediate();
+
+                // Determine the width of the type
+                let (bit_width, _is_signed) = int_type_width_signed(arg_tys[0], self)
+                    .expect("cttz must have an integer argument");
+                let bit_width = bit_width as u32;
+
+                // Constants
+                let bit_width_value = self.constant_int(input.ty, bit_width as u128);
+                let one = self.constant_int(input.ty, 1);
+                let zero = self.constant_int(input.ty, 0);
+
+                // Isolate the lowest set bit: `x & -x`
+                let neg_x = self.neg(input);
+                let lowest_bit = self.and(input, neg_x);
+
+                // Fill all bits below the lowest `1`, applying only necessary shifts
+                let mut x = lowest_bit;
+                if bit_width > 1 {
+                    let shift_1 = self.lshr(x, self.constant_int(input.ty, 1));
+                    x = self.or(x, shift_1);
+                }
+                if bit_width > 2 {
+                    let shift_2 = self.lshr(x, self.constant_int(input.ty, 2));
+                    x = self.or(x, shift_2);
+                }
+                if bit_width > 4 {
+                    let shift_4 = self.lshr(x, self.constant_int(input.ty, 4));
+                    x = self.or(x, shift_4);
+                }
+                if bit_width > 8 {
+                    let shift_8 = self.lshr(x, self.constant_int(input.ty, 8));
+                    x = self.or(x, shift_8);
+                }
+                if bit_width > 16 {
+                    let shift_16 = self.lshr(x, self.constant_int(input.ty, 16));
+                    x = self.or(x, shift_16);
+                }
+                if bit_width > 32 {
+                    let shift_32 = self.lshr(x, self.constant_int(input.ty, 32));
+                    x = self.or(x, shift_32);
+                }
+                if bit_width > 64 {
+                    let shift_64 = self.lshr(x, self.constant_int(input.ty, 64));
+                    x = self.or(x, shift_64);
+                }
+
+                // Count the number of set bits
+                let popcnt = self
                     .emit()
-                    .u_count_trailing_zeros_intel(
-                        args[0].immediate().ty,
-                        None,
-                        args[0].immediate().def(self),
-                    )
-                    .unwrap();
-                self.ext_inst
-                    .borrow_mut()
-                    .require_integer_functions_2_intel(self, result);
-                result.with_type(args[0].immediate().ty)
+                    .bit_count(input.ty, None, x.def(self))
+                    .unwrap()
+                    .with_type(input.ty);
+
+                // Prevent underflow by converting `icmp` result to an integer
+                let popcnt_is_zero_bool = self.icmp(IntPredicate::IntEQ, popcnt, zero);
+                // Convert bool to int
+                let popcnt_is_zero = self.zext(popcnt_is_zero_bool, input.ty);
+                // 1 if popcnt != 0, 0 otherwise
+                let not_popcnt_zero = self.xor(popcnt_is_zero, one);
+                let popcnt_decrement = self.and(one, not_popcnt_zero);
+                // Only subtract if `popcnt > 0`
+                let popcnt_minus_one = self.sub(popcnt, popcnt_decrement);
+
+                if name == sym::cttz_nonzero {
+                    popcnt_minus_one
+                } else {
+                    // Handle zero case without branching.
+                    let is_zero_bool = self.icmp(IntPredicate::IntEQ, input, zero);
+                    let is_zero = self.zext(is_zero_bool, input.ty);
+                    let zero_case_value = self.mul(is_zero, bit_width_value);
+                    self.or(popcnt_minus_one, zero_case_value)
+                }
             }
 
             sym::ctpop => self
