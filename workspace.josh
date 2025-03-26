@@ -1,0 +1,2 @@
+crates = :/rust-cuda/crates
+rust-toolchain.cuda.toml = :/rust-cuda/rust-toolchain
